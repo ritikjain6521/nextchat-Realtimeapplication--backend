@@ -10,7 +10,11 @@ import path from "path";
 import { app, server } from "./socket/socket.js";
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3001",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+}));
 app.use(cookieParser());
  
 dotenv.config();

@@ -6,8 +6,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*", // Usually you'd restrict this to your frontend URL
+    origin: process.env.FRONTEND_URL || "http://localhost:3001",
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
