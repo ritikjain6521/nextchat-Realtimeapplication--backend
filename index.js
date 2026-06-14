@@ -9,9 +9,15 @@ import statusRouter from "./routes/status.router.js";
 import path from "path";
 import { app, server } from "./socket/socket.js";
 
+const allowedOrigins = [
+    "http://localhost:3001", 
+    "https://nextchat-realtimeapplication-backen.vercel.app",
+    process.env.FRONTEND_URL
+];
+
 app.use(express.json());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3001",
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
 }));
