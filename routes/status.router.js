@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import Status from "../models/status.model.js";
-import secureRoute from "../middieware/secureRoute.js";
+import secureRoute from "../middieware/Secureroute.js";
 
 const router = express.Router();
 
