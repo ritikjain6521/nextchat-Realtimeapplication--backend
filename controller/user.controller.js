@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import bcrypt from "bcryptjs/dist/bcrypt.js";
+import bcrypt from "bcrypt";
 import generateToken from "../jwt/jwttoken.js";
 export const Signup= async (req,res)=>{
  const{fullname,email,password,confirmPassword}=req.body;
