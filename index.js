@@ -9,18 +9,24 @@ import statusRouter from "./routes/status.router.js";
 import path from "path";
 import { app, server } from "./socket/socket.js";
 
-const allowedOrigins = [
-    "http://localhost:3001", 
-    "https://nextchat-realtimeapplication-backen.vercel.app",
-    process.env.FRONTEND_URL
-];
-
-app.use(express.json());
-app.use(cors({
-    origin: allowedOrigins,
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        // Allow localhost and any vercel frontend
+        if (origin.includes("localhost") || origin.includes("vercel.app") || origin === process.env.FRONTEND_URL) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-}));
+};
+
+app.use(express.json());
+app.use(cors(corsOptions));
 app.use(cookieParser());
  
 dotenv.config();

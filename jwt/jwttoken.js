@@ -6,10 +6,10 @@ const generateToken = (userId,res) => {
   expiresIn: '30d',
 
  });
- res.cookie('jwt', token, {
-    httpOnly: true,
-    secure:true,
-    sameSite:'strict'
- });
+    res.cookie('jwt', token, {
+        httpOnly: true,
+        secure: true, // MUST be true for cross-domain cookies
+        sameSite: 'none' // MUST be 'none' when frontend and backend are on different domains
+    });
 };
 export default generateToken;

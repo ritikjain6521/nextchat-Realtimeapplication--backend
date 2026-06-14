@@ -4,18 +4,21 @@ import express from "express";
 
 const app = express();
 const server = http.createServer(app);
-const allowedOrigins = [
-    "http://localhost:3001", 
-    "https://nextchat-realtimeapplication-backen.vercel.app",
-    process.env.FRONTEND_URL
-];
-
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (origin.includes("localhost") || origin.includes("vercel.app") || origin === process.env.FRONTEND_URL) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ["GET", "POST"],
     credentials: true,
-  },
+};
+
+const io = new Server(server, {
+  cors: corsOptions,
 });
 
 const userSocketMap = {}; // {userId: socketId}
