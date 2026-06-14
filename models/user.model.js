@@ -17,8 +17,26 @@ password:{
 },
 confirmPassword:{
   type:String,
-
-
+},
+profilePhoto: {
+  type: String,
+  default: "https://img.daisyui.com/images/profile/demo/gordon@192.webp"
+},
+customStatus: {
+  type: String,
+  default: "Available"
+},
+bio: {
+  type: String,
+  default: ""
+},
+website: {
+  type: String,
+  default: ""
+},
+socialLink: {
+  type: String,
+  default: ""
 }
 
 },{timestamps:true})
