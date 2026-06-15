@@ -108,7 +108,7 @@ export const updateProfile = async (req, res) => {
             // Provide the public URL to access the image
             const port = process.env.PORT || 3001;
             const baseUrl = process.env.NODE_ENV === "production" 
-                ? "https://nextchat-realtimeapplication-backend-3.onrender.com" 
+                ? "https://nextchat-realtimeapplication-backend-4.onrender.com" 
                 : `http://localhost:${port}`;
             updateData.profilePhoto = `${baseUrl}/uploads/${req.file.filename}`;
         }
