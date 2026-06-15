@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
+import User from "../models/user.model.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -40,10 +41,22 @@ io.on("connection", (socket) => {
 
   // --- WebRTC Signaling for Calls ---
   
-  socket.on("callUser", ({ userToCall, signalData, from, name }) => {
-    const receiverSocketId = getReceiverSocketId(userToCall);
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("callUser", { signal: signalData, from, name });
+  socket.on("callUser", async ({ userToCall, signalData, from, name }) => {
+    try {
+      const caller = await User.findById(from);
+      const receiver = await User.findById(userToCall);
+      
+      if (caller?.blockedUsers?.some(id => id.toString() === userToCall.toString()) || 
+          receiver?.blockedUsers?.some(id => id.toString() === from.toString())) {
+          return socket.emit("callRejected", { reason: "User unavailable" });
+      }
+
+      const receiverSocketId = getReceiverSocketId(userToCall);
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("callUser", { signal: signalData, from, name });
+      }
+    } catch(err) {
+      console.error("Error in callUser:", err);
     }
   });
 

@@ -37,7 +37,19 @@ website: {
 socialLink: {
   type: String,
   default: ""
-}
+},
+starredMessages: [{
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "message",
+}],
+blockedUsers: [{
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+}],
+mutedConversations: [{
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Conversion",
+}]
 
 },{timestamps:true})
 

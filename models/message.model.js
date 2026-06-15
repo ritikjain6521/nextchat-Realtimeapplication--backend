@@ -13,8 +13,16 @@ const messageSchema = new mongoose.Schema({
     },
     message: {
         type: String,
-        required: true
-    }, 
-},    { timestamps: true })
+        required: false // Not required if sending an image/audio
+    },
+    mediaUrl: {
+        type: String,
+        default: null
+    },
+    mediaType: {
+        type: String, // 'image', 'audio', 'document', etc.
+        default: null
+    }
+}, { timestamps: true })
 const Message = mongoose.model("message", messageSchema);
 export default Message;
