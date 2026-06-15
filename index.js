@@ -42,10 +42,13 @@ const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 
 try {
+    if (!URI) {
+        throw new Error("MONGODB_URI is not defined. Please set it in your environment variables (e.g. on the Render dashboard).");
+    }
     mongoose.connect(URI)
     console.log("MongoDb is connected succussfully")
 } catch (error) {
-    console.log(error)
+    console.error("Database connection error:", error.message)
 }
 
 app.use("/api/User", user);
