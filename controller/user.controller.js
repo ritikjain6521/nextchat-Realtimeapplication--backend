@@ -35,8 +35,8 @@ export const Signup= async (req,res)=>{
  
     
   } catch (error) {
-     console.log(error);
-        res.status(500).json({message:"Something went wrong"});
+     console.log("Signup Error:", error);
+        res.status(500).json({message: error.message || "Something went wrong"});
   }
 }
 export const login = async (req,res)=>{
@@ -60,8 +60,8 @@ export const login = async (req,res)=>{
             socialLink:user.socialLink,
         } });
     } catch (error) {
-       console.log(error);
-            res.status(500).json({message:"Something went wrong"});
+       console.log("Login Error:", error);
+            res.status(500).json({message: error.message || "Something went wrong"});
     }
 
 

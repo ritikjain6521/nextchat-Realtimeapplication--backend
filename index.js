@@ -73,6 +73,11 @@ app.use("/api/ai", aiRouter);
 app.use("/api/channel", channelRouter);
 app.use("/api/action", actionRouter);
 
+// Root route to check backend health
+app.get("/", (req, res) => {
+    res.status(200).json({ message: "Backend is running successfully!" });
+});
+
 // 404 handler for unknown routes
 app.use((req, res) => {
     res.status(404).json({ message: "Route not found" });
