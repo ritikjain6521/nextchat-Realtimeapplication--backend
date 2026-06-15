@@ -8,10 +8,15 @@ try {
     if(!token){
     return res.status(401).json({error: "No token, authorization denied"});
     }
-    const decoded = jwt.verify(token, process.env.JWT_TOKEN);
+    let decoded;
+    try {
+        decoded = jwt.verify(token, process.env.JWT_TOKEN);
+    } catch (err) {
+        return res.status(401).json({error: "invalid or expired token"});
+    }
+    
     if(!decoded){
      return res.status(401).json({error: "invalid token"});
-
     }
     const user = await User.findById(decoded.userId).select("-password");
     if(!user){

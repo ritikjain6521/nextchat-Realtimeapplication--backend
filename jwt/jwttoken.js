@@ -8,8 +8,9 @@ const generateToken = (userId,res) => {
  });
     res.cookie('jwt', token, {
         httpOnly: true,
-        secure: true, // MUST be true for cross-domain cookies
-        sameSite: 'none' // MUST be 'none' when frontend and backend are on different domains
+        secure: true,       // MUST be true for cross-domain cookies
+        sameSite: 'none',   // MUST be 'none' when frontend and backend are on different domains
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days — matches JWT expiry
     });
 };
 export default generateToken;

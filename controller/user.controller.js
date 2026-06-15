@@ -90,7 +90,7 @@ export const allUser = async (req, res)=>{
     
     } catch (error) {
         console.log("Error in alluser Controller:" +error );
-        
+        res.status(500).json({ message: "Internal server error" });
     }
     
     

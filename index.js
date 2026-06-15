@@ -1,5 +1,7 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config(); // MUST be first — loads env vars before any other module reads process.env
+
+import express from "express";
 import mongoose from "mongoose";
 import user from "./routes/User.js";
 import cors from "cors";
@@ -19,21 +21,25 @@ const corsOptions = {
         if (!origin) return callback(null, true);
 
         // Allow localhost and any vercel frontend
-        if (origin.includes("localhost") || origin.includes("vercel.app") || origin === process.env.FRONTEND_URL) {
+        if (
+            origin.includes("localhost") ||
+            origin.includes("vercel.app") ||
+            origin === process.env.FRONTEND_URL
+        ) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            callback(new Error("Not allowed by CORS"));
         }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-dotenv.config();
 const PORT = process.env.PORT || 3001;
 const URI = process.env.MONGODB_URI;
 
@@ -41,15 +47,23 @@ const URI = process.env.MONGODB_URI;
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 
-try {
-    if (!URI) {
-        throw new Error("MONGODB_URI is not defined. Please set it in your environment variables (e.g. on the Render dashboard).");
+// Connect to MongoDB
+const connectDB = async () => {
+    try {
+        if (!URI) {
+            throw new Error(
+                "MONGODB_URI is not defined. Please set it in your environment variables (e.g. on the Render dashboard)."
+            );
+        }
+        await mongoose.connect(URI);
+        console.log("MongoDB connected successfully");
+    } catch (error) {
+        console.error("Database connection error:", error.message);
+        process.exit(1); // Exit if DB connection fails — prevents silent failures
     }
-    mongoose.connect(URI)
-    console.log("MongoDb is connected succussfully")
-} catch (error) {
-    console.error("Database connection error:", error.message)
-}
+};
+
+connectDB();
 
 app.use("/api/User", user);
 app.use("/api/message", Message);
@@ -59,6 +73,17 @@ app.use("/api/ai", aiRouter);
 app.use("/api/channel", channelRouter);
 app.use("/api/action", actionRouter);
 
+// 404 handler for unknown routes
+app.use((req, res) => {
+    res.status(404).json({ message: "Route not found" });
+});
+
+// Global error handler — catches any unhandled errors from route handlers
+app.use((err, req, res, next) => {
+    console.error("Unhandled error:", err.stack || err.message);
+    res.status(err.status || 500).json({ message: err.message || "Internal Server Error" });
+});
+
 server.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}`)
-})
+    console.log(`Server listening on port ${PORT}`);
+});
