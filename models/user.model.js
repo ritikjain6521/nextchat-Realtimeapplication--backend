@@ -49,7 +49,20 @@ blockedUsers: [{
 mutedConversations: [{
   type: mongoose.Schema.Types.ObjectId,
   ref: "Conversion",
-}]
+}],
+isAdmin: {
+  type: Boolean,
+  default: false
+},
+credits: {
+  type: Number,
+  default: 100 // Welcome bonus
+},
+plan: {
+  type: String,
+  enum: ['Free', 'Pro', 'Team', 'Enterprise'],
+  default: 'Free'
+}
 
 },{timestamps:true})
 

@@ -161,7 +161,7 @@ export const getStarredMessages = async (req, res) => {
     const User = (await import('../models/user.model.js')).default;
     const user = await User.findById(userId).populate({
       path: 'starredMessages',
-      model: 'Message'
+      model: 'message'
     });
     res.status(200).json(user?.starredMessages || []);
   } catch (error) {

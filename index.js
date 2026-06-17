@@ -12,6 +12,8 @@ import groupRouter from "./routes/group.router.js";
 import aiRouter from "./routes/ai.router.js";
 import channelRouter from "./routes/channel.router.js";
 import actionRouter from "./routes/action.router.js";
+import adminRouter from "./routes/admin.router.js";
+import paymentRouter from "./routes/payment.router.js";
 import path from "path";
 import { app, server } from "./socket/socket.js";
 
@@ -72,6 +74,8 @@ app.use("/api/group", groupRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/channel", channelRouter);
 app.use("/api/action", actionRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/payment", paymentRouter);
 
 // Root route to check backend health
 app.get("/", (req, res) => {

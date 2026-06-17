@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import generateToken from "../jwt/jwttoken.js";
 export const Signup= async (req,res)=>{
- const{fullname,email,password,confirmPassword}=req.body;
+  const{fullname,email,password,confirmPassword,plan}=req.body;
   try {
      if(password!==confirmPassword){
    return res.status(400).json({message:"Password not match"});
@@ -13,10 +13,11 @@ export const Signup= async (req,res)=>{
         return res.status(400).json({message:"User already exists"});
     }
    const hashedPassword= await bcrypt.hash(password,10);
-    const newUser= await new User({fullname, 
+   const newUser= await new User({fullname, 
         email,
         password:hashedPassword,
-   
+        plan: plan || 'Free',
+        credits: plan === 'Enterprise' ? 10000 : plan === 'Team' ? 2500 : plan === 'Pro' ? 500 : 100
     });
     await newUser.save();
     if(newUser){
@@ -30,6 +31,8 @@ export const Signup= async (req,res)=>{
             bio:newUser.bio,
             website:newUser.website,
             socialLink:newUser.socialLink,
+            plan:newUser.plan,
+            credits:newUser.credits,
          }});
     }
  
@@ -39,6 +42,44 @@ export const Signup= async (req,res)=>{
         res.status(500).json({message: error.message || "Something went wrong"});
   }
 }
+
+export const adminLogin = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
+
+        if (!user || !isPasswordCorrect) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        if (!user.isAdmin) {
+            return res.status(403).json({ message: "Access denied. You are not an administrator." });
+        }
+
+        generateToken(user._id, res);
+        res.status(200).json({
+            message: "Admin login successful",
+            user: {
+                _id: user._id,
+                fullname: user.fullname,
+                email: user.email,
+                profilePhoto: user.profilePhoto,
+                customStatus: user.customStatus,
+                bio: user.bio,
+                website: user.website,
+                socialLink: user.socialLink,
+                plan: user.plan,
+                credits: user.credits,
+                isAdmin: user.isAdmin,
+            }
+        });
+    } catch (error) {
+        console.log("Admin Login Error:", error);
+        res.status(500).json({ message: error.message || "Something went wrong" });
+    }
+}
+
 export const login = async (req,res)=>{
 
     const{email,password}=req.body;
@@ -58,6 +99,8 @@ export const login = async (req,res)=>{
             bio:user.bio,
             website:user.website,
             socialLink:user.socialLink,
+            plan:user.plan,
+            credits:user.credits,
         } });
     } catch (error) {
        console.log("Login Error:", error);

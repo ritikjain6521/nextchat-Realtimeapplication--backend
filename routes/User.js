@@ -1,5 +1,5 @@
 import express from  "express";
-import { allUser, login, logout, Signup, updateProfile } from "../controller/user.controller.js";
+import { allUser, login, logout, Signup, updateProfile, adminLogin } from "../controller/user.controller.js";
 import secureRoute from "../middieware/Secureroute.js";
 import multer from "multer";
 import path from "path";
@@ -27,6 +27,7 @@ const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5M
 const router = express.Router();
 router.post("/signup", Signup);
 router.post("/login", login);
+router.post("/admin-login", adminLogin);
 router.post("/logout", logout);
 router.get("/alluser", secureRoute, allUser);
 router.put("/update-profile", secureRoute, upload.single("profilePhoto"), updateProfile);
