@@ -61,7 +61,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("answerCall", (data) => {
-    io.to(data.to).emit("callAccepted", data.signal);
+    const callerSocketId = getReceiverSocketId(data.to);
+    if (callerSocketId) {
+      io.to(callerSocketId).emit("callAccepted", data.signal);
+    }
   });
 
   socket.on("endCall", ({ to }) => {

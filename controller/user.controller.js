@@ -21,8 +21,8 @@ export const Signup= async (req,res)=>{
     });
     await newUser.save();
     if(newUser){
-          generateToken(newUser._id,res);
-         res.status(200).json({message:"User registered successfully", User:{
+          const token = generateToken(newUser._id,res);
+         res.status(200).json({message:"User registered successfully", token, User:{
             _id:newUser._id,
             fullname:newUser.fullname,
             email:newUser.email,
@@ -57,9 +57,10 @@ export const adminLogin = async (req, res) => {
             return res.status(403).json({ message: "Access denied. You are not an administrator." });
         }
 
-        generateToken(user._id, res);
+        const token = generateToken(user._id, res);
         res.status(200).json({
             message: "Admin login successful",
+            token,
             user: {
                 _id: user._id,
                 fullname: user.fullname,
@@ -89,8 +90,8 @@ export const login = async (req,res)=>{
         if(!user || !isPasswordCorrect){
             return res.status(400).json({message:"Invalid credentials"});
         }
-        generateToken(user._id,res);
-        res.status(200).json({message:"Login successful",user:{
+        const token = generateToken(user._id,res);
+        res.status(200).json({message:"Login successful", token, user:{
             _id:user._id,
             fullname:user.fullname,
             email:user.email,
