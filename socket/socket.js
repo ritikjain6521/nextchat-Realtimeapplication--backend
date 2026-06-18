@@ -54,9 +54,13 @@ io.on("connection", (socket) => {
       const receiverSocketId = getReceiverSocketId(userToCall);
       if (receiverSocketId) {
         io.to(receiverSocketId).emit("callUser", { signal: signalData, from, name });
+      } else {
+        // Receiver is offline — notify caller immediately
+        socket.emit("callRejected", { reason: "User is offline" });
       }
     } catch(err) {
       console.error("Error in callUser:", err);
+      socket.emit("callRejected", { reason: "Something went wrong" });
     }
   });
 
