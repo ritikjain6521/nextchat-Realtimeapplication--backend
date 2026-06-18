@@ -1,5 +1,6 @@
 import express from  "express";
 import { allUser, login, logout, Signup, updateProfile, adminLogin } from "../controller/user.controller.js";
+import { createTicket } from "../controller/admin.controller.js";
 import secureRoute from "../middieware/Secureroute.js";
 import multer from "multer";
 import path from "path";
@@ -31,4 +32,5 @@ router.post("/admin-login", adminLogin);
 router.post("/logout", logout);
 router.get("/alluser", secureRoute, allUser);
 router.put("/update-profile", secureRoute, upload.single("profilePhoto"), updateProfile);
+router.post("/ticket", secureRoute, createTicket);
 export default router;
